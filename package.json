@@ -1,10 +1,24 @@
 {
   "name": "bamazon",
   "version": "1.0.0",
-  "description": "activity for demonstrating inquirer with mysql",
+  "description": "selling site",
   "main": "bamazonCustomer.js",
   "dependencies": {
-    "inquirer": "^3.0.1",
+    "inquirer": "^3.2.2",
     "mysql": "^2.14.1"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djblight/bamazon.git"
+  },
+  "author": "David Blight",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djblight/bamazon/issues"
+  },
+  "homepage": "https://github.com/djblight/bamazon#readme"
 }
