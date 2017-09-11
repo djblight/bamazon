@@ -10,22 +10,22 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "1@Dra2@Aus3",
+    password: "root",
     database: "bamazon_db"
 });
 
 // connect to the mysql server and sql database
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
-    // start();
+    start();
 });
 
 // Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
 function start() {
 
     //Query products, id, and prices to display to customer
-    connection.query("SELECT item_id, product_name, price FROM products", function(error, data) {
+    connection.query("SELECT item_id, product_name, price FROM products", function (error, data) {
         if (error) {
             return console.log("Error!");
         }
@@ -33,12 +33,14 @@ function start() {
             var list = "ID. #" + data[i].item_id + " || Item: " + data[i].product_name + ", $" + data[i].price;
             console.log(list);
         }
+        service();
     });
 }
 
 function service() {
-    inquirer.prompt([
-        {
+    //Beginning of a prompt asking the user if they would like to continue or not.
+
+    inquirer.prompt([{
             name: "id",
             message: "What is the ID of the item you want to buy?",
             type: "input"
@@ -48,19 +50,21 @@ function service() {
             message: "How many units would you like to buy of this item?",
             type: "input"
         }
-    ]).then(function(response) {
+    ]).then(function (response) {
         var id = response.id;
         var desiredQuantity = response.desiredQuantity;
 
         //Check if there is enough in stock of the item using parameters
         check(id, desiredQuantity);
     });
+
+
 }
 
 function check(id, desiredQuantity) {
     connection.query("SELECT stock_quantity, price FROM products WHERE ?", {
         item_id: id
-    }, function(error, data) {
+    }, function (error, data) {
         if (error) {
             return console.log("Error!");
         }
@@ -76,16 +80,35 @@ function check(id, desiredQuantity) {
                 stock_quantity: inStock
             }, {
                 item_id: id
-            }], function(error, data) {
+            }], function (error, data) {
                 if (error) {
                     return console.log("Error!");
                 }
             });
 
-            return console.log("Purchase successful! Your total price is: $" + totalPrice.toFixed(2));
+            console.log("Purchase successful! Your total price is: $" + totalPrice.toFixed(2));
+            keepShopping();
 
         } else {
-            return console.log("Insufficient quantity!");
+            console.log("Insufficient quantity!");
+            keepShopping();
         }
     });
+}
+
+function keepShopping() {
+    inquirer.prompt({
+            name: "continue",
+            type: "confirm",
+            message: "Would you like to keep shopping?"
+        })
+        .then(function (answer) {
+            //If they answer yes then restart the entire application
+            if (answer.continue === 'Y') {
+                start();
+            //If the answer is anything else exit out of the application
+            } else {
+                process.exit();
+            }
+        });
 }
